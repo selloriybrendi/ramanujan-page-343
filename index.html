@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ramanujan Page 343</title>
+<meta name="description" content="Interactive calculator for page 343 of Ramanujan's Lost Notebook: Pisot units in Q(2^(1/5)).">
+<style>
+:root{--bg:#fbfbf9;--fg:#1d1d1b;--mut:#6b6b66;--card:#ffffff;--line:#e3e2dc;--acc:#1f5fa8;--ok:#1b7f3b;--bad:#b3261e;--soft:#eef3fa}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141413;--fg:#ecebe6;--mut:#a3a29c;--card:#1e1e1c;--line:#34332f;--acc:#7fb0ea;--ok:#6fcf8b;--bad:#f08a80;--soft:#1f2a38}}
+:root[data-theme="dark"]{--bg:#141413;--fg:#ecebe6;--mut:#a3a29c;--card:#1e1e1c;--line:#34332f;--acc:#7fb0ea;--ok:#6fcf8b;--bad:#f08a80;--soft:#1f2a38}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+main{max-width:880px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.45rem;margin:0 0 4px}
+.sub{color:var(--mut);margin:0 0 20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:0 0 16px}
+.card h2{font-size:1.05rem;margin:0 0 10px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+label{font-size:.85rem;color:var(--mut);display:block;margin-bottom:3px}
+input[type=number]{width:120px;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--fg);font-size:15px}
+input[type=range]{width:100%}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+td{padding:6px 4px;border-top:1px solid var(--line);vertical-align:top}
+td:first-child{color:var(--mut);width:42%}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}
+.mono sup{font-size:.75em}
+.nw{white-space:nowrap}
+.ok{color:var(--ok);font-weight:600}.bad{color:var(--bad);font-weight:600}
+.note{font-size:.85rem;color:var(--mut)}
+canvas{width:100%;max-width:360px;aspect-ratio:1;display:block;margin:6px auto 0}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;background:var(--soft);font-size:.8rem}
+code{font-family:ui-monospace,Menlo,monospace;font-size:.9em}
+</style>
+</head>
+<body>
+<main>
+<h1>Page 343 of Ramanujan's Lost Notebook</h1>
+<p class="sub">θ = 2<sup>1/5</sup>, a = 1/(θ−1) = 1+θ+θ²+θ³+θ⁴, b = √5/(1+θ²)<sup>5/2</sup> = 1−θ−θ²+θ⁴.
+Ramanujan claimed that a<sup>m</sup>b<sup>n</sup>θ is extremely close to an integer p<sub>m,n</sub>.
+Andrews–Berndt (Lost Notebook IV, §7.4) called the claims wrong; the integer is the trace and the error is a sum of Galois conjugates.
+<span class="badge" id="selftest">self-test …</span></p>
+
+<section class="card">
+<h2>1. Calculator for (7.4.1)</h2>
+<div class="row">
+<div><label for="m">m (0–3000)</label><input id="m" type="number" min="0" max="3000" value="40"></div>
+<div><label for="n">n (0–500)</label><input id="n" type="number" min="0" max="500" value="0"></div>
+</div>
+<table id="out" aria-live="polite"></table>
+<p class="note">p<sub>m,n</sub> = Tr(a<sup>m</sup>b<sup>n</sup>θ) is computed exactly with integer arithmetic in Z[θ].
+ε = a<sup>m</sup>b<sup>n</sup>θ − p<sub>m,n</sub> = −Σ<sub>s=1..4</sub> σ<sub>s</sub>(a<sup>m</sup>b<sup>n</sup>θ) is computed from the conjugates, so no big-float library is needed.
+Theorem: |ε| ≤ 2θ(|σ₁(a)|<sup>m</sup>|σ₁(b)|<sup>n</sup> + |σ₂(a)|<sup>m</sup>|σ₂(b)|<sup>n</sup>); the error tends to 0 exactly when m &gt; 6.0114·n.</p>
+</section>
+
+<section class="card">
+<h2>2. Why 5 and 7: the Pisot boundary</h2>
+<label for="p">p = <b id="pv">5</b></label>
+<input id="p" type="range" min="2" max="12" value="5">
+<canvas id="cv" width="320" height="320" aria-label="conjugates of 1/(2^(1/p)-1) and the unit circle"></canvas>
+<p id="pinfo"></p>
+<p class="note">a<sub>p</sub> = 1/(2<sup>1/p</sup>−1) is a unit. It is a Pisot number (all other conjugates inside the unit circle) exactly when 2<sup>1/p</sup> &gt; 2cos(2π/p), i.e. p ≤ 6.
+Ramanujan's two cases are p = 5 (last odd Pisot case) and p = 7 (first non-Pisot case, where he adds the units b and c).</p>
+</section>
+
+<p class="note">Source code and a Python verification script (<a href="verify/verify_343.py"><code>verify_343.py</code></a>, 15 checks; <a href="paper/Kenjaev_Ramanujan_p343.pdf">the note</a>) accompany the note. Everything runs locally in your browser.</p>
+</main>
+<script>
+"use strict";
+// ---------- exact arithmetic in Z[θ], θ^5 = 2 (BigInt) ----------
+function mul5(u, v) {
+  const w = new Array(9).fill(0n);
+  for (let i = 0; i < 5; i++) for (let j = 0; j < 5; j++) w[i + j] += u[i] * v[j];
+  return [w[0] + 2n * w[5], w[1] + 2n * w[6], w[2] + 2n * w[7], w[3] + 2n * w[8], w[4]];
+}
+function pow5(u, e) {
+  let r = [1n, 0n, 0n, 0n, 0n], b = u.slice();
+  while (e > 0) { if (e & 1) r = mul5(r, b); b = mul5(b, b); e >>= 1; }
+  return r;
+}
+const A = [1n, 1n, 1n, 1n, 1n], B = [1n, -1n, -1n, 0n, 1n], TH = [0n, 1n, 0n, 0n, 0n];
+function traceInt(m, n) { return 5n * mul5(mul5(pow5(A, m), pow5(B, n)), TH)[0]; }
+
+// ---------- conjugates (double precision, log form to avoid underflow) ----------
+const th = Math.pow(2, 1 / 5), LN10 = Math.log(10);
+function cx(re, im) { return { re, im }; }
+function cmul(x, y) { return cx(x.re * y.re - x.im * y.im, x.re * y.im + x.im * y.re); }
+function cdiv(x, y) { const d = y.re * y.re + y.im * y.im; return cx((x.re * y.re + x.im * y.im) / d, (x.im * y.re - x.re * y.im) / d); }
+function cabs(x) { return Math.hypot(x.re, x.im); }
+function carg(x) { return Math.atan2(x.im, x.re); }
+const conj = [1, 2].map(s => {
+  const t = cx(th * Math.cos(2 * Math.PI * s / 5), th * Math.sin(2 * Math.PI * s / 5));
+  const t2 = cmul(t, t), t4 = cmul(t2, t2);
+  const a = cdiv(cx(1, 0), cx(t.re - 1, t.im));
+  const b = cx(t4.re - t2.re - t.re + 1, t4.im - t2.im - t.im);
+  return { t, a, b, la: Math.log(cabs(a)), lb: Math.log(cabs(b)), pa: carg(a), pb: carg(b) };
+});
+// term_s = σ_s(a)^m σ_s(b)^n σ_s(θ):  log|.| and phase
+function terms(m, n) {
+  return conj.map(c => ({ lg: m * c.la + n * c.lb + Math.log(th), ph: m * c.pa + n * c.pb + carg(c.t) }));
+}
+// ε = -2 Re(term1) - 2 Re(term2), returned as {sign, log10abs}
+function epsilon(m, n) {
+  const T = terms(m, n), M = Math.max(T[0].lg, T[1].lg);
+  const v = -2 * (Math.exp(T[0].lg - M) * Math.cos(T[0].ph) + Math.exp(T[1].lg - M) * Math.cos(T[1].ph));
+  if (v === 0) return { sign: 0, l10: -Infinity };
+  return { sign: Math.sign(v), l10: (Math.log(Math.abs(v)) + M) / LN10 };
+}
+function bound(m, n) { // 2θ(|σ1|^m|σ1b|^n + |σ2|^m|σ2b|^n), log10
+  const L = conj.map(c => m * c.la + n * c.lb), M = Math.max(...L);
+  return (Math.log(2 * th) + M + Math.log(Math.exp(L[0] - M) + Math.exp(L[1] - M))) / LN10;
+}
+function sci(l10, sign = 1) {
+  if (!isFinite(l10)) return "0";
+  const e = Math.floor(l10), mant = Math.pow(10, l10 - e);
+  const s = sign < 0 ? "−" : "";
+  if (e >= -3 && e <= 3) return '<span class="nw">' + s + (mant * Math.pow(10, e)).toPrecision(8) + "</span>";
+  return '<span class="nw">' + s + mant.toFixed(6) + " × 10<sup>" + (e < 0 ? "−" + (-e) : e) + "</sup></span>";
+}
+function shortInt(x) {
+  const s = x.toString();
+  return s.length <= 60 ? s : s.slice(0, 25) + "…" + s.slice(-25) + "  (" + s.length + " digits)";
+}
+
+// ---------- UI ----------
+const $ = id => document.getElementById(id);
+function clampInt(el, lo, hi) {
+  let v = parseInt(el.value, 10); if (!Number.isFinite(v)) v = lo; v = Math.min(hi, Math.max(lo, v));
+  if (el.value !== "" && String(v) !== el.value) el.value = v; // show the value actually used
+  return v;
+}
+function render() {
+  const m = clampInt($("m"), 0, 3000), n = clampInt($("n"), 0, 500);
+  const tr = traceInt(m, n), e = epsilon(m, n), bd = bound(m, n);
+  const near = e.l10 < Math.log10(0.5);
+  const ramanujanMax = Math.max(...conj.map(c => m * c.la + n * c.lb)) / LN10; // = max_s |σ_s(a^m b^n)|
+  const ratio = Math.pow(10, e.l10 - ramanujanMax);
+  const cone = m > 6.0114084 * n;
+  $("out").innerHTML =
+    `<tr><td>p<sub>m,n</sub> = Tr(a<sup>m</sup>b<sup>n</sup>θ)</td><td class="mono">${shortInt(tr)}</td></tr>` +
+    `<tr><td>ε = a<sup>m</sup>b<sup>n</sup>θ − p<sub>m,n</sub></td><td class="mono">${sci(e.l10, e.sign)}</td></tr>` +
+    `<tr><td>theorem bound 2θ(|σ₁|+|σ₂|)</td><td class="mono">${sci(bd)}  <span class="${e.l10 <= bd + 1e-9 ? "ok" : "bad"}">${e.l10 <= bd + 1e-9 ? "holds" : "violated"}</span></td></tr>` +
+    `<tr><td>Ramanujan's error term max<sub>s</sub>|σ<sub>s</sub>(a<sup>m</sup>b<sup>n</sup>)|</td><td class="mono">${sci(ramanujanMax)}  (|ε| / term = ${ratio.toFixed(4)})</td></tr>` +
+    `<tr><td>p<sub>m,n</sub> is the nearest integer?</td><td class="${near ? "ok" : "bad"}">${near ? "yes (|ε| < 1/2)" : "no (|ε| ≥ 1/2)"}</td></tr>` +
+    `<tr><td>in the decaying cone m &gt; 6.0114·n?</td><td class="${cone ? "ok" : "bad"}">${cone ? "yes" : "no — error grows"}</td></tr>`;
+}
+function drawP() {
+  const p = parseInt($("p").value, 10); $("pv").textContent = p;
+  const cv = $("cv"), g = cv.getContext("2d"), dpr = window.devicePixelRatio || 1;
+  const W = Math.max(160, Math.round(cv.getBoundingClientRect().width)) || 320;
+  cv.width = cv.height = Math.round(W * dpr); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const t = Math.pow(2, 1 / p), zs = [];
+  for (let s = 1; s < p; s++) zs.push(cdiv(cx(1, 0), cx(t * Math.cos(2 * Math.PI * s / p) - 1, t * Math.sin(2 * Math.PI * s / p))));
+  const mx = Math.max(...zs.map(cabs));
+  const dot = Math.max(4, W / 55), c0 = W / 2, R = (W / 2 - dot - 4) / Math.max(1.15, mx); // every conjugate stays on the canvas
+  const css = getComputedStyle(document.documentElement);
+  const fg = css.getPropertyValue("--fg").trim(), mut = css.getPropertyValue("--mut").trim();
+  const ok = css.getPropertyValue("--ok").trim(), bad = css.getPropertyValue("--bad").trim();
+  g.clearRect(0, 0, W, W);
+  g.strokeStyle = mut; g.lineWidth = 1; g.beginPath(); g.moveTo(0, c0); g.lineTo(W, c0); g.moveTo(c0, 0); g.lineTo(c0, W); g.stroke();
+  g.strokeStyle = fg; g.lineWidth = 1.6; g.beginPath(); g.arc(c0, c0, R, 0, 2 * Math.PI); g.stroke();
+  for (const z of zs) {
+    const r = cabs(z);
+    g.fillStyle = r < 1 ? ok : bad; g.beginPath(); g.arc(c0 + R * z.re, c0 - R * z.im, dot, 0, 2 * Math.PI); g.fill();
+  }
+  const pis = mx < 1;
+  $("pinfo").innerHTML = `a<sub>${p}</sub> = ${(1 / (t - 1)).toFixed(6)}; largest other conjugate |σ| = <b>${mx.toFixed(7)}</b> — ` +
+    `<span class="${pis ? "ok" : "bad"}">${pis ? "Pisot" : "not Pisot"}</span>. Test: 2<sup>1/${p}</sup> = ${t.toFixed(4)} vs 2cos(2π/${p}) = ${(2 * Math.cos(2 * Math.PI / p)).toFixed(4)}.`;
+}
+// ---------- self-test against the Python reference (verify_343.py / 37-oxirgi-recheck.py) ----------
+function selfTest() {
+  const close = (l10, sign, ref) => sign === Math.sign(ref) && Math.abs(Math.pow(10, l10) - Math.abs(ref)) <= 1e-6 * Math.abs(ref);
+  const cases = [
+    () => traceInt(2, 0) === 50n && close(epsilon(2, 0).l10, epsilon(2, 0).sign, 1.95097),
+    () => close(epsilon(200, 0).l10, epsilon(200, 0).sign, -8.3283964e-22),
+    () => close(epsilon(200, 5).l10, epsilon(200, 5).sign, 5.5812612e-18),
+    () => close(epsilon(300, 40).l10, epsilon(300, 40).sign, 9.6704966e-7) && traceInt(300, 40).toString().replace("-", "").length === 226,
+    () => [1n, 5n, 35n, 235n, 1580n, 10626n].every((v, k) => traceInt(k + 1, 0) / 10n === v && traceInt(k + 1, 0) % 10n === 0n), // A374455
+  ];
+  const res = cases.map(f => { try { return f(); } catch (e) { return false; } });
+  const k = res.filter(Boolean).length;
+  const el = $("selftest"); el.textContent = `self-test ${k}/${res.length}`; el.className = "badge " + (k === res.length ? "ok" : "bad");
+  window.__selftest = res;
+}
+["m", "n"].forEach(id => $(id).addEventListener("input", render));
+$("p").addEventListener("input", drawP);
+window.addEventListener("resize", drawP);
+render(); drawP(); selfTest();
+</script>
+</body>
+</html>

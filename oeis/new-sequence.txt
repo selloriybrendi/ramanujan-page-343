@@ -1,0 +1,21 @@
+%I A000000
+%S A000000 1,1,9,61,409,2751,18501,124419,836721,5626969,37841501,254485001,1711417729,11509325231,77400487929,520520135751,3500510384001,23541016200689,158313897965841,1064664756842789,7159895997935001,48150472129148751,323813078699551549,2177650712450775051
+%N A000000 a(n) = trace of (2^(1/5)-1)^(-n) over Q, divided by 5.
+%C A000000 Let theta = 2^(1/5) and alpha = 1/(theta-1) = 1 + theta + theta^2 + theta^3 + theta^4, a unit of Z[theta] with minimal polynomial x^5 - 5x^4 - 10x^3 - 10x^2 - 5x - 1. Then 5*a(n) = alpha^n + (sum of the other four conjugates of alpha^n).
+%C A000000 alpha is a Pisot number: its other conjugates have moduli 0.7882149... and 0.4892248... (two complex pairs). Hence 5*a(n) is the integer nearest to alpha^n for n = 2 and all n >= 4, and the distance tends to 0 like 0.788^n.
+%C A000000 This is the case n=0 (without the factor theta) of the near-integer phenomenon in Ramanujan's "third manuscript" on page 343 of the Lost Notebook, which Andrews and Berndt (2013, Sect. 7.4) could not interpret.
+%C A000000 Of the numbers 1/(2^(1/p)-1), p >= 2, exactly those with p <= 6 are Pisot numbers (criterion 2^(1/p) > 2*cos(2*Pi/p)).
+%D A000000 G. E. Andrews and B. C. Berndt, Ramanujan's Lost Notebook, Part IV, Springer, 2013, Section 7.4, pp. 179-181.
+%F A000000 a(n) = 5*a(n-1) + 10*a(n-2) + 10*a(n-3) + 5*a(n-4) + a(n-5) for n >= 5.
+%F A000000 G.f.: (2 - (1+x)^4)/(2 - (1+x)^5) = (1 - 4*x - 6*x^2 - 4*x^3 - x^4)/(1 - 5*x - 10*x^2 - 10*x^3 - 5*x^4 - x^5).
+%F A000000 a(n) = A374455(n) - 4*A374455(n-1) - 6*A374455(n-2) - 4*A374455(n-3) - A374455(n-4), with A374455(k) = 0 for k < 0.
+%e A000000 a(2) = 9: (2^(1/5)-1)^(-2) = 45.2259..., and 5*9 = 45.
+%o A000000 (Python)
+%o A000000 def a_list(N):
+%o A000000     s = [1, 1, 9, 61, 409]
+%o A000000     while len(s) < N: s.append(5*s[-1] + 10*s[-2] + 10*s[-3] + 5*s[-4] + s[-5])
+%o A000000     return s[:N]
+%Y A000000 Cf. A374455 (1/(2-(1+x)^5)), A001333 (the analog for 2^(1/2): Tr((1+sqrt(2))^n)/2).
+%K A000000 nonn,easy
+%O A000000 0,3
+%A A000000 _Otakhon U. Kenjaev_, Sep 27 2026

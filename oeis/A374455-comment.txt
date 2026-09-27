@@ -1,0 +1,8 @@
+Proposed additions to A374455 (Expansion of o.g.f. 1/(1 - 5*x - 10*x^2 - 10*x^3 - 5*x^4 - x^5)):
+
+%C A374455 a(n) = Tr(theta*alpha^(n+1))/10, where theta = 2^(1/5) and alpha = 1/(theta-1) = 1 + theta + ... + theta^4 (a Pisot unit). Consequently 10*a(n) is the integer nearest to 2^(1/5)*(2^(1/5)-1)^(-(n+1)) for n = 3 and all n >= 5; this is the case n=0 of Ramanujan's claim on page 343 of the Lost Notebook (see Andrews-Berndt, Part IV, Sect. 7.4). - _Otakhon U. Kenjaev_, Sep 27 2026
+%F A374455 G.f.: 1/(2 - (1+x)^5). - _Otakhon U. Kenjaev_, Sep 27 2026
+
+Verification (make_oeis.py): our values equal the 23 terms in the DATA field of the entry; both sides satisfy the recurrence with
+signature (5,10,10,5,1) and agree on the first 5 terms, hence for all n. Nearest-integer property checked for n < 499
+(exceptions n = [0, 1, 2, 4]) and proved for n >= 6 from |eps| <= 2*2^(1/5)*(0.78822^(n+1) + 0.48923^(n+1)).

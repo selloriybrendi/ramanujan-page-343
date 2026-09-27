@@ -1,0 +1,17 @@
+[PASS] 1  a*(theta-1) = 1 and b^2*(1+theta^2)^5 = 5 in Q[theta]/(theta^5-2)
+[PASS] 2  a, b are units: N(a) = N(b) = 1
+[PASS] 3  Tr via Z[theta] arithmetic == trace of multiplication matrix  —  6 pairs up to (300,40)
+[PASS] 4  |eps| <= 2 theta (|s1|+|s2|) on m<=300, n<=40  —  12341 pairs, 0 violations
+[PASS] 5  Tr(a^m theta) = nearest integer to a^m theta exactly for m = 4 and m >= 6 (m < 60); proof bound from m0 = 7  —  m0 = 7
+[PASS] 6  |s1(a)|, |s2(a)|, |s1(b)|, |s2(b)| = 0.788215, 0.489225, 4.181301, 0.457816  —  0.7882149, 0.4892248, 4.181301, 0.457816
+[PASS] 7  Lemma B: Pisot exactly for p = 2..6 (tested p = 2..12)
+[PASS] 8  limsup |eps_m| / |s1(a)|^m -> 2 theta  —  2.297396344 vs 2.29739671
+[PASS] 9  theta^7=2: a(theta-1)=1, b and c are units, 7(theta+1)^2 = u^2 (theta^3-1)^7 (theta^3+1)
+[PASS] 10 Pisot cone (l<=60, m<=3, n<=12) has 526 points, none with m = 0; a^4 b and a^3 b c are Pisot
+[PASS] 11 (a^4 b)^40 theta is within 3e-9 of an integer (900 digits)  —  2.86531e-9
+[PASS] 12 Tr(theta a^(n+1))/10 = A374455(n) (23 OEIS terms; both satisfy signature (5,10,10,5,1))
+[PASS] 13 printed (7.4.1) factor == |sigma_s(a^m b^n)| for s = 1..4  —  max rel. diff 6.15e-50
+[PASS] 14 corrected (7.4.2) factor == |sigma_s(a^l b^m c^n)| for s = 1..6  —  max rel. diff 7.48e-50
+[PASS] 15 printed (7.4.2) factor differs from the conjugate moduli (a- and c-factors)  —  min rel. diff 0.138
+
+15/15 checks passed

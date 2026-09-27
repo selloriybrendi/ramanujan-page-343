@@ -1,0 +1,20 @@
+{
+  "title": "Pisot units and the third manuscript on page 343 of Ramanujan's Lost Notebook, with a verification script and calculator",
+  "description": "Andrews and Berndt (Ramanujan's Lost Notebook, Part IV, Sect. 7.4) could not give a meaning to Ramanujan's claims on page 343 and wrote that they are wrong. We show that a = 1/(2^(1/5)-1) = 1+θ+θ^2+θ^3+θ^4 and b = √5/(1+4^(1/5))^(5/2) = 1-θ-θ^2+θ^4 (θ = 2^(1/5)) are units of Z[θ], that each factor of Ramanujan's error term is the modulus of a Galois conjugate of a^m b^n, and that the integer is Tr(a^m b^n θ). This proves (7.4.1) with the bound 2θ(|σ1(a^m b^n)|+|σ2(a^m b^n)|); the constant 2θ is sharp and the bound tends to 0 exactly along sequences with m − 6.0114 n → ∞. The number 1/(2^(1/p)−1) is a Pisot number if and only if p ≤ 6, which explains why the case 2^(1/7) in (7.4.2) needs further units; the printed (7.4.2) differs from the conjugate moduli in three places and its corrected form holds on an explicit cone. The record contains a 6-page note, a Python script with 15 checks (SymPy, mpmath), an offline calculator, the figure code and two OEIS drafts.",
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "creators": [
+    {
+      "name": "Kenjaev, Otakhon U.",
+      "orcid": "0009-0009-3566-9285"
+    }
+  ],
+  "keywords": [
+    "Ramanujan",
+    "Lost Notebook",
+    "Pisot numbers",
+    "units",
+    "Diophantine approximation",
+    "pure quintic field"
+  ]
+}
