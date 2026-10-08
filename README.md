@@ -29,3 +29,6 @@ Claude Opus 5.5 (Anthropic, `claude-opus-5-5`) via Claude Code was used for the 
 the text, under the author's direction; every number was verified independently. The author takes full responsibility.
 
 Author: Otakhon U. Kenjaev, ORCID [0009-0009-3566-9285](https://orcid.org/0009-0009-3566-9285)
+
+---
+**Author:** Otakhon U. Kenjaev (also written *Otaxon Kenjayev* / *Отахон Кенжаев*) · [otakhonkenjaev.com](https://otakhonkenjaev.com/) · ORCID [0009-0009-3566-9285](https://orcid.org/0009-0009-3566-9285)
